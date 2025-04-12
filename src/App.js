@@ -32,7 +32,7 @@ const router = createBrowserRouter(
     },
     {
       path: "/kakao/redirect",
-      element: <KakaoRedirectPage />,
+      element: <KakaoRedirectPage/>,
     },
     {
       path: "/interview/stage1",
