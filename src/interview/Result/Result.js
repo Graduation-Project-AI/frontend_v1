@@ -15,13 +15,13 @@ const Result = () => {
   useEffect(() => {
     const answerList = JSON.parse(localStorage.getItem("answerList") || "[]");
     const analyzeResult = JSON.parse(localStorage.getItem("analyzeResult") || "[]");
-  
+
     // ✅ 중복 제거: questionId 기준으로 중복 분석 제거
     const uniqueResults = analyzeResult.filter(
       (result, index, self) =>
         index === self.findIndex((r) => r.questionId === result.questionId)
     );
-  
+
     const merged = uniqueResults.map((result) => {
       const match = answerList.find((a) => a.questionId === result.questionId);
       return {
@@ -37,10 +37,33 @@ const Result = () => {
         }
       };
     });
-  
+
     setMergedData(merged);
+    // 과거 인터뷰 결과 preload → mypage용
+    const fetchPastResults = async () => {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+
+      if (!userId || !token) return;
+
+      try {
+        const res = await fetch(`http://localhost:8080/api/results/${userId}/with-answers`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) throw new Error("응답 실패");
+        const data = await res.json();
+        localStorage.setItem("mypageResults", JSON.stringify(data));
+      } catch (err) {
+        console.error("과거 결과 preload 실패:", err);
+      }
+    };
+
+    fetchPastResults();
   }, []);
-  
+
 
   if (mergedData.length === 0) return <div>로딩 중...</div>;
 
@@ -50,8 +73,8 @@ const Result = () => {
     score,
     color:
       name === "논리성" ? "#A594F9" :
-      name === "표현력" ? "#A0E7E5" :
-      name === "유사성" ? "#FFDD94" : "#000000"
+        name === "표현력" ? "#A0E7E5" :
+          name === "유사성" ? "#FFDD94" : "#000000"
   }));
 
   const handleFinish = () => navigate("/feedback");
