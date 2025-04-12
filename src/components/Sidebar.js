@@ -3,8 +3,6 @@ import styled from "styled-components";
 import Logo from "./Logo";
 import { ReactComponent as MenuIcon } from "../assets/menuIcon.svg";
 import { ReactComponent as ChatIcon } from "../assets/chatIcon.svg";
-import { ReactComponent as HistoryIcon } from "../assets/historyIcon.svg";
-import { ReactComponent as CommunityIcon } from "../assets/communityIcon.svg";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
@@ -32,24 +30,6 @@ const Sidebar = () => {
           <ChatIconStyled />
           <MenuText>Interview</MenuText>
         </MenuItem>
-
-        <MenuItem
-          active={location.pathname.startsWith("/history")}
-          onClick={() => navigate("/mypage")}
-        >
-          <HistoryIconStyled />
-          <MenuText>History</MenuText>
-        </MenuItem>
-
-        <MenuItem
-          active={location.pathname.startsWith("/community")}
-          onClick={() => navigate("/community")}
-        >
-          <CommunityIconStyled />
-          <MenuText>Community</MenuText>
-        </MenuItem>
-
-        
       </MenuList>
     </Container>
   );
@@ -101,14 +81,5 @@ const ChatIconStyled = styled(ChatIcon)`
   height: 27.991px;
 `;
 
-const HistoryIconStyled = styled(HistoryIcon)`
-  width: 32.467px;
-  height: 27.991px;
-`;
-
-const CommunityIconStyled = styled(CommunityIcon)`
-  width: 32.467px;
-  height: 27.991px;
-`;
 
 export default Sidebar;

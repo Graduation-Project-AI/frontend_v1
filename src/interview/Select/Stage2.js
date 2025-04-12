@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
+import axios from "axios";
 import Sidebar from "../../components/Sidebar";
 import StepIndicatorBar from "../../components/StepIndicatorBar";
 import Title from "../../components/SubTitle";
 import SubText from "../../components/SubText";
 import Button from "../../components/Button";
 
-const jobList = [ // 나중에 백엔드 Field table로 바꾸기
+const jobList = [
   { jobId: 1, job: "frontend" },
   { jobId: 2, job: "backend" },
   { jobId: 3, job: "fullStack" },
@@ -25,15 +26,38 @@ function Stage2() {
   const [selectjobId, setselectjobId] = useState("");
   const navigate = useNavigate();
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!selectjobId) {
-      alert("직군을 선택해해주세요.");
+      alert("직군을 선택해 주세요.");
       return;
     }
-    console.log("company:", company);
-    console.log("jobId:", selectjobId);
-    navigate(`/interview/stage3?company=${encodeURIComponent(company)}&jobId=${selectjobId}`); // 쿼리파라미터로 회사, 직군 정보 전달
 
+    const userId = parseInt(localStorage.getItem("userId"));
+    const token = localStorage.getItem("token");
+
+    const interviewData = {
+      company,
+      jobId: parseInt(selectjobId),
+      userId,
+      resume: [], // 자소서 없이 진행
+    };
+
+    try {
+      const res = await axios.post("http://localhost:8080/api/interview/start", interviewData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const interviewId = res.data.interviewId;
+      localStorage.setItem("interviewId", interviewId);
+      console.log("인터뷰 시작 완료:", interviewId);
+
+      navigate("/questioncount");
+    } catch (err) {
+      console.error("인터뷰 시작 실패:", err);
+      alert("인터뷰 시작 중 오류가 발생했습니다.");
+    }
   };
 
   return (
@@ -41,7 +65,6 @@ function Stage2() {
       <Sidebar />
       <MainContent>
         <StepIndicatorBar currentStep={2} />
-
         <Title>직군 선택</Title>
         <SubText>지원하는 직군을 선택해주세요.</SubText>
 
@@ -64,7 +87,6 @@ function Stage2() {
 }
 
 export default Stage2;
-
 const Wrapper = styled.div`
   display: flex;
   height: 100vh;

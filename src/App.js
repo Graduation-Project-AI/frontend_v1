@@ -9,7 +9,6 @@ import {
 import Home from "./home/Home"
 import Stage1 from "./interview/Select/Stage1"
 import Stage2 from './interview/Select/Stage2';
-import Stage3 from './interview/Select/Stage3';
 import QuestionCount from './interview/QuestionCount/QuestionCount';
 import Tutorial from './interview/Tutorial/Tutorial';
 import Question from './interview/Question/Question';
@@ -19,8 +18,7 @@ import Result from './interview/Result/Result';
 import Mypage from './mypage/Mypage';
 import KakaoRedirectPage from './kakao/KakaoRedirect';
 import Loading from './loading/Loading';
-import Community from './community/Community';
-import PostDetail from './community/PostDetail';
+
 
 const router = createBrowserRouter(
   [
@@ -43,10 +41,6 @@ const router = createBrowserRouter(
     {
       path: "/interview/stage2",
       element: <Stage2 />,
-    },
-    {
-      path: "/interview/stage3",
-      element: <Stage3 />,
     },
     {
       path: "/questioncount",
@@ -79,14 +73,6 @@ const router = createBrowserRouter(
     {
       path: "/loading",
       element: <Loading />,
-    },
-    {
-      path: "/community",
-      element: <Community />,
-    },
-    {
-      path: "/post",
-      element: <PostDetail />,
     },
     // 모든 경로가 잘못된 경우 /home으로 리디렉션
     {

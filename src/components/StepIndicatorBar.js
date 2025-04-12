@@ -6,7 +6,6 @@ const StepIndicatorBar = ({ currentStep = 1 }) => {
     <Bar>
       <Step active={currentStep === 1} />
       <Step active={currentStep === 2} />
-      <Step active={currentStep === 3} />
     </Bar>
   );
 };
