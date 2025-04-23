@@ -10,6 +10,7 @@ const Answer = () => {
   const navigate = useNavigate();
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+  const [isSubmitting, setIsSubmitting] = useState(false); // answer버튼 누름 여부부
 
   // 마이크 녹음
   useEffect(() => {
@@ -49,6 +50,8 @@ const Answer = () => {
 
   // 녹음 종료 후 백엔드 전송
   const stopRecordingAndSubmit = async () => {
+    if (isSubmitting) return; // 중복 제출 방지
+    setIsSubmitting(true);
     const recorder = mediaRecorderRef.current;
     if (recorder && recorder.state !== "inactive") {
       recorder.stop();
@@ -101,9 +104,13 @@ const Answer = () => {
       <MainContent>
         <TitleBox title="답변해 주세요" subtitle="2분 제한 시간이 주어집니다." />
         <Timer duration={120} time={timeLeft} />
-        <FinishButton onClick={handleFinish} >
-          답변 마치기
-        </FinishButton>
+        {!isSubmitting && (
+          <FinishButton onClick={handleFinish}>
+            답변 마치기
+          </FinishButton>
+        )}
+        {isSubmitting && <ProcessingText>답변 저장 중...</ProcessingText>}
+
       </MainContent>
     </Wrapper>
   );
@@ -140,4 +147,9 @@ const FinishButton = styled.button`
     background-color: #d3d3d3;
     cursor: not-allowed;
   }
+`;
+const ProcessingText = styled.p`
+  font-size: 14px;
+  color: #999;
+  font-weight: 500;
 `;
