@@ -71,8 +71,8 @@ const Mypage = () => {
           const date = `${month}.${day}`;
           return {
             name: date,
-            논리성: Math.round(item.logicScore * 10) / 10,
-            표현력: Math.round(item.claScore * 10) / 10,
+            논리성: Math.round(item.logicScore * 100) / 10,
+            표현력: Math.round(item.claScore * 100) / 10,
             유사성: Math.round(item.simScore * 10) / 10,
           };
         });

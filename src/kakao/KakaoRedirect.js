@@ -19,11 +19,27 @@ function KakaoRedirectPage() {
             localStorage.setItem("userId", userId);
             localStorage.setItem("name", name);
             console.log("로그인성공");
+            // mypage 결과 불러오기
+            fetch(`http://localhost:8080/api/results/${userId}/with-answers`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((res) => {
+                    if (!res.ok) throw new Error("불러오기 실패");
+                    return res.json();
+                })
+                .then((data) => {
+                    localStorage.setItem("mypageResults", JSON.stringify(data));
+                })
+                .catch((err) => {
+                    console.error("mypageResults preload 실패:", err);
+                });
 
             // 시간 차 두고 이동(localstorage에 저장하기 위한 시간 필요)
             setTimeout(() => {
                 navigate("/interview/stage1");
-            }, 100); 
+            }, 100);
         } else {
             alert("로그인 실패");
             navigate("/home");
