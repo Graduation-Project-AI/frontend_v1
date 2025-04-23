@@ -16,7 +16,7 @@ const Result = () => {
     const answerList = JSON.parse(localStorage.getItem("answerList") || "[]");
     const analyzeResult = JSON.parse(localStorage.getItem("analyzeResult") || "[]");
 
-    // ✅ 중복 제거: questionId 기준으로 중복 분석 제거
+    // 중복 제거: questionId 기준으로 중복 분석 제거
     const uniqueResults = analyzeResult.filter(
       (result, index, self) =>
         index === self.findIndex((r) => r.questionId === result.questionId)
@@ -30,10 +30,10 @@ const Result = () => {
         improvement: result.impAnswer || "",
         guidance: result.suggestion || "",
         scores: {
-          논리성: result.logicScore || 0,
-          표현력: result.claScore || 0,
+          논리성: result.logicScore * 10 || 0,
+          표현력: result.claScore * 10 || 0,
           유사성: result.simScore || 0,
-          총점: Math.round(((result.logicScore || 0) + (result.claScore || 0) + (result.simScore || 0)) / 3)
+          총점: Math.round(((result.logicScore * 10 || 0) + (result.claScore * 10 || 0) + (result.simScore || 0)) / 3)
         }
       };
     });
