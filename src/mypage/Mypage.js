@@ -11,6 +11,7 @@ import {
   Legend,
   CartesianGrid,
 } from "recharts";
+import { useNavigate } from "react-router-dom";
 
 const jobMap = {
   1: "Frontend",
@@ -27,6 +28,7 @@ const Mypage = () => {
   const [selected, setSelected] = useState(null);
   const [historyList, setHistoryList] = useState([]);
   const [scoreChartData, setScoreChartData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const raw = localStorage.getItem("mypageResults");
@@ -120,6 +122,9 @@ const Mypage = () => {
               <EmptyState>
                 <p>아직 진행한 면접 연습이 없어요.</p>
                 <span>면접 연습을 시작하면 여기에 히스토리가 표시됩니다.</span>
+                <StartButton onClick={() => navigate("/interview/stage1")}>
+                  면접 연습하러 가기
+                </StartButton>
               </EmptyState>
             ) : (
               historyList.map((item) => (
@@ -341,6 +346,9 @@ const Divider = styled.div`
 `;
 
 const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background: #f3f3f3;
   border-radius: 16px;
   padding: 40px 20px;
@@ -354,5 +362,26 @@ const EmptyState = styled.div`
     font-weight: 600;
     margin-bottom: 8px;
     color: #555;
+  }
+
+  span {
+    display: block;
+    margin-bottom: 16px;
+  }
+`;
+
+const StartButton = styled.button`
+  margin-top: 10px;
+  background-color: #5030e5;
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background-color: #3b24b3;
   }
 `;
