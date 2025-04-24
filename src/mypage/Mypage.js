@@ -2,8 +2,16 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Sidebar from "../components/Sidebar";
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  CartesianGrid,
 } from "recharts";
+import { useNavigate } from "react-router-dom";
 
 const jobMap = {
   1: "Frontend",
@@ -20,6 +28,7 @@ const Mypage = () => {
   const [selected, setSelected] = useState(null);
   const [historyList, setHistoryList] = useState([]);
   const [scoreChartData, setScoreChartData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const raw = localStorage.getItem("mypageResults");
@@ -85,7 +94,7 @@ const Mypage = () => {
   }, []);
 
   const userName = localStorage.getItem("name") || "사용자";
-  const allJobs = [...new Set(historyList.map(h => h.company.split(" - ")[1]))].join(", ");
+  const allJobs = [...new Set(historyList.map((h) => h.company.split(" - ")[1]))].join(", ");
 
   return (
     <Wrapper>
@@ -109,23 +118,35 @@ const Mypage = () => {
         <Main>
           <Left>
             <Divider />
-            {historyList.map((item) => (
-              <Card
-                key={item.id}
-                onClick={() => setSelected(selected?.id === item.id ? null : item)}
-                isSelected={selected?.id === item.id}
-              >
-                <DateTag>{item.date}</DateTag>
-                <Company>{item.company}</Company>
-                {item.questions.map((q, idx) => (
-                  <div key={idx}>Q{idx + 1}. {q.question}</div>
-                ))}
-              </Card>
-            ))}
+            {historyList.length === 0 ? (
+              <EmptyState>
+                <p>아직 진행한 면접 연습이 없어요.</p>
+                <span>면접 연습을 시작하면 여기에 히스토리가 표시됩니다.</span>
+                <StartButton onClick={() => navigate("/interview/stage1")}>
+                  면접 연습하러 가기
+                </StartButton>
+              </EmptyState>
+            ) : (
+              historyList.map((item) => (
+                <Card
+                  key={item.id}
+                  onClick={() => setSelected(selected?.id === item.id ? null : item)}
+                  isSelected={selected?.id === item.id}
+                >
+                  <DateTag>{item.date}</DateTag>
+                  <Company>{item.company}</Company>
+                  {item.questions.map((q, idx) => (
+                    <div key={idx}>
+                      Q{idx + 1}. {q.question}
+                    </div>
+                  ))}
+                </Card>
+              ))
+            )}
           </Left>
 
           <Right>
-          {!selected && (
+            {!selected && (
               <ChartWrapper>
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={scoreChartData}>
@@ -135,25 +156,38 @@ const Mypage = () => {
                     <Tooltip />
                     <Legend />
                     <Line type="monotone" dataKey="논리성" stroke="#8884d8" strokeWidth={2} />
-                    <Line type="monotone" dataKey="표현력" stroke="#82ca9d" strokeWidth={2} strokeDasharray="3 3" />
-                    <Line type="monotone" dataKey="유사성" stroke="#ffc658" strokeWidth={2} strokeDasharray="5 5" />
+                    <Line
+                      type="monotone"
+                      dataKey="표현력"
+                      stroke="#82ca9d"
+                      strokeWidth={2}
+                      strokeDasharray="3 3"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="유사성"
+                      stroke="#ffc658"
+                      strokeWidth={2}
+                      strokeDasharray="5 5"
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </ChartWrapper>
             )}
 
-            {selected && selected.questions.map((qa, idx) => (
-              <React.Fragment key={idx}>
-                <QuestionBox>
-                  <Label>Question</Label>
-                  <Text>{qa.question}</Text>
-                </QuestionBox>
-                <AnswerBox>
-                  <Label>Answer</Label>
-                  <Text>{qa.answer}</Text>
-                </AnswerBox>
-              </React.Fragment>
-            ))}
+            {selected &&
+              selected.questions.map((qa, idx) => (
+                <React.Fragment key={idx}>
+                  <QuestionBox>
+                    <Label>Question</Label>
+                    <Text>{qa.question}</Text>
+                  </QuestionBox>
+                  <AnswerBox>
+                    <Label>Answer</Label>
+                    <Text>{qa.answer}</Text>
+                  </AnswerBox>
+                </React.Fragment>
+              ))}
           </Right>
         </Main>
       </Content>
@@ -238,7 +272,6 @@ const Left = styled.div`
 
 const Right = styled.div`
   flex: 2;
-
 `;
 
 const Card = styled.div`
@@ -249,7 +282,9 @@ const Card = styled.div`
   margin-bottom: 16px;
   cursor: pointer;
   transition: background 0.2s ease;
-  &:hover {background: #EBEBEB;}
+  &:hover {
+    background: #ebebeb;
+  }
 `;
 
 const DateTag = styled.div`
@@ -308,4 +343,45 @@ const Divider = styled.div`
   height: 3px;
   background-color: #5030e5;
   margin-bottom: 24px;
+`;
+
+const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f3f3f3;
+  border-radius: 16px;
+  padding: 40px 20px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+  font-weight: 500;
+
+  p {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #555;
+  }
+
+  span {
+    display: block;
+    margin-bottom: 16px;
+  }
+`;
+
+const StartButton = styled.button`
+  margin-top: 10px;
+  background-color: #5030e5;
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background-color: #3b24b3;
+  }
 `;
